@@ -15,16 +15,16 @@ public class MicRecorder implements Runnable {
     private final int SAMPLE_RATE;
     private final int CHANNEL_COUNT;
     private final int CHANNEL_BITS;
-    private final int BUFFER_125MS_SIZE;
+    private final int BUFFER_500MS_SIZE;
     private Thread thread;
     private boolean shouldStop = false;
 
-    public MicRecorder(AudioEncoder encoder, int samplerate, int channelcount, int channelbits, int buffer125mssize) {
+    public MicRecorder(AudioEncoder encoder, int samplerate, int channelcount, int channelbits, int buffer500mssize) {
         this.encoder = encoder;
         SAMPLE_RATE = samplerate;
         CHANNEL_COUNT = channelcount;
         CHANNEL_BITS = channelbits;
-        BUFFER_125MS_SIZE = buffer125mssize;
+        BUFFER_500MS_SIZE = buffer500mssize;
 
         recorder = encoder.getRecorder();
         thread = new Thread(this, "MicRecordingThread");
@@ -49,9 +49,9 @@ public class MicRecorder implements Runnable {
     }
 
     private void record() {
-        byte[] data = new byte[BUFFER_125MS_SIZE];
+        byte[] data = new byte[BUFFER_500MS_SIZE];
 
-        recorder.read(data, 0, BUFFER_125MS_SIZE);
+        recorder.read(data, 0, BUFFER_500MS_SIZE);
         encoder.pushInputFrame(data);
     }
 

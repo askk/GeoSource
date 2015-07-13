@@ -32,7 +32,7 @@ public class AudioEncoder implements Runnable {
     private int channelcfg;
     private int BUFFER_SIZE;
     private final int SAMPLES_PER_SEC;
-    private final int BUFFER_125MS_SIZE;
+    private final int BUFFER_500MS_SIZE;
     private MediaCodec encoder;
     private MicRecorder micRecorder;
     private Thread thread;
@@ -42,6 +42,7 @@ public class AudioEncoder implements Runnable {
     private int inputSize = 100;
     private ArrayBlockingQueue<byte[]> output;
     private int outputSize = 100;
+    private VideoEncoder videoEncoder;
 
     private boolean shouldEncode = false;
 
@@ -69,14 +70,18 @@ public class AudioEncoder implements Runnable {
 
         SAMPLES_PER_SEC = SAMPLE_RATE / CHANNEL_COUNT / (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1);
 
-        BUFFER_125MS_SIZE = SAMPLES_PER_SEC / 8;
+        BUFFER_500MS_SIZE = SAMPLES_PER_SEC / 2;
 
         thread = new Thread(this, "AudioEncodingThread");
     }
 
     private void setupRecorder() {
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, channelcfg, AUDIO_FORMAT, BUFFER_SIZE * 10);
-        micRecorder = new MicRecorder(this, SAMPLE_RATE, CHANNEL_COUNT, (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1), BUFFER_125MS_SIZE);
+        micRecorder = new MicRecorder(this, SAMPLE_RATE, CHANNEL_COUNT, (AUDIO_FORMAT == AudioFormat.ENCODING_PCM_16BIT ? 2 : 1), BUFFER_500MS_SIZE);
+    }
+
+    public void setVideoEncoder(VideoEncoder videoEncoder) {
+        this.videoEncoder = videoEncoder;
     }
 
     private void setupEncoder() {
@@ -148,7 +153,7 @@ public class AudioEncoder implements Runnable {
     }
 
     public void pushInputFrame(byte[] frame) {
-        if (input.size() >= inputSize)
+        if (input.size() >= inputSize || !videoEncoder.isReadyToDecode)
             return;
 
         synchronized (lock) {
@@ -197,8 +202,13 @@ public class AudioEncoder implements Runnable {
 
             while (outputBufferIndex >= 0) {
                 ByteBuffer outputBuffer = outputBuffers[outputBufferIndex];
-                outFrame = new byte[bufferInfo.size];
-                outputBuffer.get(outFrame);
+
+                int outSize = bufferInfo.size + 7; // ADTS HEADER SIZE ADDED
+
+                outFrame = new byte[outSize];
+                addADTStoPacket(outFrame, outSize);
+                outputBuffer.get(outFrame, 7, bufferInfo.size);
+                outputBuffer.position(bufferInfo.offset);
 
                 pushOutputFrame(outFrame);
 
@@ -206,6 +216,22 @@ public class AudioEncoder implements Runnable {
                 outputBufferIndex = encoder.dequeueOutputBuffer(bufferInfo, 0);
             }
         }
+    }
+
+    private void addADTStoPacket(byte[] packet, int packetLen) {
+        int profile = 1;  //AAC LC
+        //39=MediaCodecInfo.CodecProfileLevel.AACObjectELD;
+        int freqIdx = 11;  //44.1KHz
+        int chanCfg = CHANNEL_COUNT;  //CPE
+
+        // fill in ADTS data
+        packet[0] = (byte) 0xFF;
+        packet[1] = (byte) 0xF9;
+        packet[2] = (byte) (((profile) << 6) + (freqIdx << 2) + (chanCfg >> 2));
+        packet[3] = (byte) (((chanCfg & 3) << 6) + (packetLen >> 11));
+        packet[4] = (byte) ((packetLen & 0x7FF) >> 3);
+        packet[5] = (byte) (((packetLen & 7) << 5) + 0x1F);
+        packet[6] = (byte) 0xFC;
     }
 
     @Override

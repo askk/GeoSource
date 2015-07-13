@@ -68,6 +68,7 @@ public class GeoSocket implements Runnable {
         this.port = port;
         this.videoEncoder = videoEncoder;
         this.audioEncoder = audioEncoder;
+        this.audioEncoder.setVideoEncoder(videoEncoder);
         this.gpsInfo = gpsInfo;
         getMacAddress();
         getHostAddress();

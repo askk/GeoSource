@@ -35,6 +35,7 @@ public class VideoEncoder implements Runnable {
     private int inputSize = 60;
     private ArrayBlockingQueue<byte[]> output;
     private int outputSize = 60;
+    public boolean isReadyToDecode = false;
 
     public VideoEncoder(int bitrate, int width, int height, String mime, int framerate, int i_frameinterval, Context context) {
         BIT_RATE = bitrate;
@@ -222,6 +223,7 @@ public class VideoEncoder implements Runnable {
 
                 encoder.releaseOutputBuffer(outputBufferIndex, false);
                 outputBufferIndex = encoder.dequeueOutputBuffer(bufferInfo, 0);
+                isReadyToDecode = true;
             }
         }
     }
