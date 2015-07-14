@@ -12,4 +12,126 @@
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:inputType="text"
+        android:layout_alignParentStart="true"
+        android:background="@android:color/holo_blue_light"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:backgroundTintMode="src_in"
+        android:editable="true"
+        android:id="@+id/editIpAddress"
+        android:hint="IP ADDRESS"
+        android:gravity="center_vertical|left"
+        android:layout_alignEnd="@+id/cameraPreview"
+        android:selectAllOnFocus="true" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:inputType="text"
+        android:background="@android:color/holo_blue_light"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:backgroundTintMode="src_in"
+        android:editable="true"
+        android:id="@+id/editPort"
+        android:hint="PORT"
+        android:gravity="center_vertical|left"
+        android:layout_below="@+id/editIpAddress"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/cameraPreview"
+        android:selectAllOnFocus="true" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:inputType="text"
+        android:background="@android:color/holo_blue_light"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:backgroundTintMode="src_in"
+        android:editable="true"
+        android:id="@+id/editID"
+        android:hint="ID"
+        android:gravity="center_vertical|left"
+        android:layout_below="@+id/editPort"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/cameraPreview"
+        android:selectAllOnFocus="true" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:background="@android:color/holo_blue_light"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:backgroundTintMode="src_in"
+        android:editable="true"
+        android:id="@+id/editPw"
+        android:hint="PW"
+        android:gravity="center_vertical|left"
+        android:layout_below="@+id/editID"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/cameraPreview"
+        android:inputType="text"
+        android:password="true"
+        android:selectAllOnFocus="true" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:background="@android:color/holo_blue_light"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:backgroundTintMode="src_in"
+        android:editable="true"
+        android:id="@+id/editFramerate"
+        android:hint="FRAMERATE"
+        android:gravity="center_vertical|left"
+        android:password="false"
+        android:layout_below="@+id/editPw"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:inputType="text"
+        android:selectAllOnFocus="true" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:background="@android:color/holo_blue_light"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:backgroundTintMode="src_in"
+        android:editable="true"
+        android:id="@+id/editIframeinterval"
+        android:hint="IFRAMEINTERVAL"
+        android:gravity="center_vertical|left"
+        android:password="false"
+        android:layout_below="@+id/editFramerate"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:inputType="text"
+        android:selectAllOnFocus="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:id="@+id/btnStart"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:id="@+id/btnStop"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RemoveSettings"
+        android:id="@+id/btnRemoveSettings"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

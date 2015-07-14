@@ -86,6 +86,7 @@ public class GeoCamera implements TextureView.SurfaceTextureListener, Camera.Pre
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         if (encoder != null) {
+
             encoder.pushInputFrame(data);
         }
     }

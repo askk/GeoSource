@@ -153,6 +153,10 @@ public class AudioEncoder implements Runnable {
     }
 
     public void pushInputFrame(byte[] frame) {
+        if (videoEncoder == null) {
+            return;
+        }
+
         if (input.size() >= inputSize || !videoEncoder.isReadyToDecode)
             return;
 
@@ -219,6 +223,12 @@ public class AudioEncoder implements Runnable {
     }
 
     private void addADTStoPacket(byte[] packet, int packetLen) {
+        // http://wiki.multimedia.cx/index.php?title=ADTS
+        // MPEG Version: MPEG-2
+        // MPEG-4 Audio Object Type: AAC-LC(2) - 1
+        // MPEG-4 Sampling Frequency Index: 11(8000Hz)
+        // MPEG-4 Channel Configuration: 1(Channel Count, mono)
+
         int profile = 1;  //AAC LC
         //39=MediaCodecInfo.CodecProfileLevel.AACObjectELD;
         int freqIdx = 11;  //44.1KHz

@@ -204,7 +204,11 @@ public class VideoEncoder implements Runnable {
                 ByteBuffer inputBuffer = inputBuffers[inputBufferIndex];
                 inputBuffer.clear();
 
-                inputBuffer.put(frame);
+                int wh4 = frame.length / 6;
+
+                inputBuffer.put(frame, 0, wh4 * 4);
+                inputBuffer.put(frame, wh4 * 5, wh4);
+                inputBuffer.put(frame, wh4 * 4, wh4);
 
                 encoder.queueInputBuffer(inputBufferIndex, 0, frame.length, 0, 0);
             }

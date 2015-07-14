@@ -68,7 +68,6 @@ public class GeoSocket implements Runnable {
         this.port = port;
         this.videoEncoder = videoEncoder;
         this.audioEncoder = audioEncoder;
-        this.audioEncoder.setVideoEncoder(videoEncoder);
         this.gpsInfo = gpsInfo;
         getMacAddress();
         getHostAddress();
@@ -166,7 +165,7 @@ public class GeoSocket implements Runnable {
     }
 
     private byte[] makePacket(int command, int size, @Nullable byte[] data) {
-        ByteBuffer packet = ByteBuffer.allocateDirect(size + 12);
+        ByteBuffer packet = ByteBuffer.allocate(size + 12);
         packet.order(ByteOrder.LITTLE_ENDIAN);
         packet.putInt(NetworkProtocol.START_CODE);
         packet.putInt(command);
@@ -254,7 +253,7 @@ public class GeoSocket implements Runnable {
     private void live_open() {
         int size = 128;
 
-        ByteBuffer liveopenPacket = ByteBuffer.allocateDirect(size);
+        ByteBuffer liveopenPacket = ByteBuffer.allocate(size);
         liveopenPacket.order(ByteOrder.LITTLE_ENDIAN);
 
         FrameInfo info = new FrameInfo(DataType.FRM_HEADER_CODE, size, System.currentTimeMillis());
@@ -295,7 +294,7 @@ public class GeoSocket implements Runnable {
 
         int frameSize = frame.length + 8;
 
-        ByteBuffer packet = ByteBuffer.allocateDirect(frameSize);
+        ByteBuffer packet = ByteBuffer.allocate(frameSize);
         packet.order(ByteOrder.LITTLE_ENDIAN);
 
         boolean intra = frame[4] == 0x65;
@@ -321,7 +320,7 @@ public class GeoSocket implements Runnable {
 
         int frameSize = frame.length + 8;
 
-        ByteBuffer packet = ByteBuffer.allocateDirect(frameSize);
+        ByteBuffer packet = ByteBuffer.allocate(frameSize);
         packet.order(ByteOrder.LITTLE_ENDIAN);
 
         FrameInfo frameInfo = new FrameInfo(DataType.FRM_AUDIO1_CODE, frameSize, System.currentTimeMillis());
@@ -336,7 +335,7 @@ public class GeoSocket implements Runnable {
     private void live_gps() {
         int size = 20; // 8 + la, lo, dir
 
-        ByteBuffer packet = ByteBuffer.allocateDirect(size);
+        ByteBuffer packet = ByteBuffer.allocate(size);
         packet.order(ByteOrder.LITTLE_ENDIAN);
 
         FrameInfo frameInfo = new FrameInfo(DataType.FRM_GPS_CODE, size, System.currentTimeMillis());
