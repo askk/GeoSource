@@ -297,15 +297,15 @@ public class GeoSocket implements Runnable {
         ByteBuffer packet = ByteBuffer.allocate(frameSize);
         packet.order(ByteOrder.LITTLE_ENDIAN);
 
-        boolean intra = frame[4] == 0x65;
+        int code = frame[4];
 
-        FrameInfo frameInfo = new FrameInfo((intra ? DataType.FRM_INTRA_CODE : DataType.FRM_INTER_CODE), frameSize, System.currentTimeMillis());
+        FrameInfo frameInfo = new FrameInfo((code == 0x67 ? DataType.FRM_VIDEO_CODE : (code == 0x65 ? DataType.FRM_INTRA_CODE : DataType.FRM_INTER_CODE)), frameSize, System.currentTimeMillis());
 
         packet.putInt(frameInfo.codeSize);
         packet.putInt(frameInfo.time);
         packet.put(frame);
 
-        if (intra) {
+        if (code == 0x65) {
             live_gps();
         }
 

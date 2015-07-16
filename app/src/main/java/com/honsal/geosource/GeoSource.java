@@ -174,8 +174,8 @@ public class GeoSource extends AppCompatActivity {
         ToastOnUIThread.setMainActivity(this);
 
         cameraPreview = (TextureView) findViewById(R.id.cameraPreview);
+        camera = new GeoCamera(this, cameraPreview, 15000);
 
-        camera = new GeoCamera(this, cameraPreview);
         gpsInfo = new GPSInfo(this);
         if (!gpsInfo.canGetLocation()) {
             gpsInfo.showSettingsAlert();
@@ -183,6 +183,10 @@ public class GeoSource extends AppCompatActivity {
     }
 
     private void setupEverything(String id, String pw, int framerate, int iframeinterval) {
+        if (camera != null) {
+            camera.setFPS(framerate);
+        }
+
         videoEncoder = new VideoEncoder(300 * 1024, 1280, 720, MediaFormat.MIMETYPE_VIDEO_AVC, framerate, iframeinterval, this);
         videoEncoder.start();
 

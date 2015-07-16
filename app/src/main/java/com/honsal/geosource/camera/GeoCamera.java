@@ -24,16 +24,32 @@ public class GeoCamera implements TextureView.SurfaceTextureListener, Camera.Pre
     private Camera camera;
     private VideoEncoder encoder;
 
-    public GeoCamera(Context context, TextureView textureView) {
+    private int fps;
+
+    public GeoCamera(Context context, TextureView textureView, int fps) {
         this.context = context;
 
         textureView.setSurfaceTextureListener(this);
 
         this.textureView = textureView;
+
+        this.fps = fps * 1000;
     }
 
     public void setEncoder(VideoEncoder encoder) {
         this.encoder = encoder;
+    }
+
+    public void setFPS(int fps) {
+        this.fps = fps * 1000;
+        if (camera == null) {
+            Log.e(TAG, "Default camera is not available!");
+            ToastOnUIThread.makeTextLongExit(context, "Default camera is not available!");
+        }
+
+        Camera.Parameters params = camera.getParameters();
+        params.setPreviewFpsRange(this.fps, this.fps);
+        camera.setParameters(params);
     }
 
     @Override
@@ -45,8 +61,8 @@ public class GeoCamera implements TextureView.SurfaceTextureListener, Camera.Pre
         }
 
         Camera.Parameters params = camera.getParameters();
-        params.setPreviewFpsRange(15000, 15000);
-        params.setPreviewFormat(ImageFormat.YV12);
+        params.setPreviewFpsRange(fps, fps);
+        params.setPreviewFormat(params.getPreviewFormat());
         params.setPreviewSize(1280, 720);
         params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
         params.setRecordingHint(true);

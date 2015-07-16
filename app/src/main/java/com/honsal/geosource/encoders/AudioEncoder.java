@@ -210,7 +210,7 @@ public class AudioEncoder implements Runnable {
                 int outSize = bufferInfo.size + 7; // ADTS HEADER SIZE ADDED
 
                 outFrame = new byte[outSize];
-                addADTStoPacket(outFrame, outSize);
+//                addADTStoPacket(outFrame, outSize);
                 outputBuffer.get(outFrame, 7, bufferInfo.size);
                 outputBuffer.position(bufferInfo.offset);
 
@@ -222,27 +222,27 @@ public class AudioEncoder implements Runnable {
         }
     }
 
-    private void addADTStoPacket(byte[] packet, int packetLen) {
-        // http://wiki.multimedia.cx/index.php?title=ADTS
-        // MPEG Version: MPEG-2
-        // MPEG-4 Audio Object Type: AAC-LC(2) - 1
-        // MPEG-4 Sampling Frequency Index: 11(8000Hz)
-        // MPEG-4 Channel Configuration: 1(Channel Count, mono)
-
-        int profile = 1;  //AAC LC
-        //39=MediaCodecInfo.CodecProfileLevel.AACObjectELD;
-        int freqIdx = 11;  //44.1KHz
-        int chanCfg = CHANNEL_COUNT;  //CPE
-
-        // fill in ADTS data
-        packet[0] = (byte) 0xFF;
-        packet[1] = (byte) 0xF9;
-        packet[2] = (byte) (((profile) << 6) + (freqIdx << 2) + (chanCfg >> 2));
-        packet[3] = (byte) (((chanCfg & 3) << 6) + (packetLen >> 11));
-        packet[4] = (byte) ((packetLen & 0x7FF) >> 3);
-        packet[5] = (byte) (((packetLen & 7) << 5) + 0x1F);
-        packet[6] = (byte) 0xFC;
-    }
+//    private void addADTStoPacket(byte[] packet, int packetLen) {
+//        // http://wiki.multimedia.cx/index.php?title=ADTS
+//        // MPEG Version: MPEG-2
+//        // MPEG-4 Audio Object Type: AAC-LC(2) - 1
+//        // MPEG-4 Sampling Frequency Index: 11(8000Hz)
+//        // MPEG-4 Channel Configuration: 1(Channel Count, mono)
+//
+//        int profile = 1;  //AAC LC
+//        //39=MediaCodecInfo.CodecProfileLevel.AACObjectELD;
+//        int freqIdx = 11;  //44.1KHz
+//        int chanCfg = CHANNEL_COUNT;  //CPE
+//
+//        // fill in ADTS data
+//        packet[0] = (byte) 0xFF;
+//        packet[1] = (byte) 0xF9;
+//        packet[2] = (byte) (((profile) << 6) + (freqIdx << 2) + (chanCfg >> 2));
+//        packet[3] = (byte) (((chanCfg & 3) << 6) + (packetLen >> 11));
+//        packet[4] = (byte) ((packetLen & 0x7FF) >> 3);
+//        packet[5] = (byte) (((packetLen & 7) << 5) + 0x1F);
+//        packet[6] = (byte) 0xFC;
+//    }
 
     @Override
     public void run() {

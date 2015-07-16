@@ -187,7 +187,6 @@ public class VideoEncoder implements Runnable {
     private synchronized void encodeFrame() {
         if (canEncode()) {
             byte[] frame;
-
             try {
                 frame = input.take();
             } catch (InterruptedException e) {
@@ -204,11 +203,13 @@ public class VideoEncoder implements Runnable {
                 ByteBuffer inputBuffer = inputBuffers[inputBufferIndex];
                 inputBuffer.clear();
 
-                int wh4 = frame.length / 6;
+//                int wh4 = frame.length / 6;
+//
+//                inputBuffer.put(frame, 0, wh4 * 4);
+//                inputBuffer.put(frame, wh4 * 5, wh4);
+//                inputBuffer.put(frame, wh4 * 4, wh4);
 
-                inputBuffer.put(frame, 0, wh4 * 4);
-                inputBuffer.put(frame, wh4 * 5, wh4);
-                inputBuffer.put(frame, wh4 * 4, wh4);
+                inputBuffer.put(frame);
 
                 encoder.queueInputBuffer(inputBufferIndex, 0, frame.length, 0, 0);
             }
@@ -216,10 +217,14 @@ public class VideoEncoder implements Runnable {
             MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
             int outputBufferIndex = encoder.dequeueOutputBuffer(bufferInfo, 0);
 
+            Log.d(TAG, Integer.toString(outputBufferIndex));
+
             byte[] outFrame;
 
             while (outputBufferIndex >= 0) {
                 ByteBuffer outputBuffer = outputBuffers[outputBufferIndex];
+                outputBuffer.position(bufferInfo.offset);
+                outputBuffer.limit(bufferInfo.offset + bufferInfo.size);
                 outFrame = new byte[bufferInfo.size];
                 outputBuffer.get(outFrame);
 
